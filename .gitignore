@@ -1,0 +1,42 @@
+# --- Python & Django ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.py.class
+*.so
+*.log
+
+# --- Environment ---
+.env
+.venv/
+venv/
+ENV/
+env/
+*.env
+
+# --- Databases ---
+db.sqlite3
+*.sqlite3
+
+# --- IDE & Editor Files ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+*.sublime-workspace
+*.sublime-project
+
+# --- Migrations (optional, keep if stable) ---
+# Uncomment if you want to ignore compiled migration files
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# --- Static & Media (if added later) ---
+/staticfiles/
+/media/
+
+# --- OS-generated files ---
+Thumbs.db
+ehthumbs.db
+Icon?
