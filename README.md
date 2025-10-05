@@ -22,7 +22,7 @@ PUT `/api/profile/` Update profile
 Setup
 
 ```bash
-git clone https://github.com/<username>/blood-sugar-tracker.git
+git clone https://github.com/sheunopamusukutwa/blood-sugar-tracker.git
 cd blood-sugar-tracker
 python3 -m venv .venv
 source .venv/bin/activate
