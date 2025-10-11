@@ -1,0 +1,15 @@
+# Minimal development requirements for local SQLite development
+
+Django==4.2.13
+djangorestframework==3.15.1
+
+# Authentication
+djangorestframework-simplejwt==5.3.1
+
+# Environment
+python-dotenv==1.0.1
+
+# Optional (CORS, testing)
+django-cors-headers==4.3.1
+pytest==8.2.0
+pytest-django==4.8.0
