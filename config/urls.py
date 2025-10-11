@@ -14,10 +14,43 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# config/urls.py
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from django.http import JsonResponse
+
+from tracker.views import (
+    RegisterView, LoginView, ProfileView,
+    ReadingListCreateView, ReadingDetailView,
+)
+
+def root_view(_request):
+    return JsonResponse({
+        "name": "Blood Sugar Tracker API",
+        "health": "/healthz",
+        "endpoints": {
+            "register": "/api/register/",
+            "login": "/api/login/",
+            "profile": "/api/profile/",
+            "readings_list_create": "/api/readings/",
+            "reading_detail": "/api/readings/{id}/"
+        }
+    })
+
+def healthz(_request):
+    return JsonResponse({"status": "ok"})
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('tracker.urls')),
+    path("admin/", admin.site.urls),
+    path("", root_view),                 # GET / → small JSON landing
+    path("healthz", healthz),            # GET /healthz → {"status":"ok"}
+
+    # Auth & profile
+    path("api/register/", RegisterView.as_view(), name="register"),
+    path("api/login/", LoginView.as_view(), name="login"),
+    path("api/profile/", ProfileView.as_view(), name="profile"),
+
+    # Readings
+    path("api/readings/", ReadingListCreateView.as_view(), name="reading-list-create"),
+    path("api/readings/<int:pk>/", ReadingDetailView.as_view(), name="reading-detail"),
 ]
