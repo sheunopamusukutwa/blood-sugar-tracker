@@ -11,7 +11,7 @@
 ├── devserver.log
 ├── manage.py
 ├── repo-structure.txt
-├── requirements-dev.txt
+├── requirements.txt
 ├── requirements.txt
 └── tracker
     ├── __init__.py

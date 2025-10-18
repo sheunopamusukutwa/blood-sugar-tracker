@@ -19,7 +19,7 @@ source "$VENV_DIR/bin/activate"
 
 echo "Installing development requirements..."
 pip install -U pip setuptools wheel
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 
 echo "Running migrations..."
 python manage.py migrate --noinput
