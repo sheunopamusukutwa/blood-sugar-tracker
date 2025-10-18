@@ -96,19 +96,21 @@ class ReadingFilter(df.FilterSet):
     Supported query params on /api/readings/:
       - ?date_from=YYYY-MM-DD  (inclusive)
       - ?date_to=YYYY-MM-DD    (inclusive)
-      - ?status=fasting|random|postprandial  (case-insensitive)
-      - ?ordering=timestamp|-timestamp|value|-value|status|-status
+      - ?notes=after dinner    (case-insensitive exact)
+      - ?notes__icontains=dinner (substring match)
+      - ?ordering=timestamp|-timestamp|value|-value|notes|-notes
     """
     # Filter against the DATE part of the timestamp (works with DateTimeField)
     date_from = df.DateFilter(field_name="timestamp__date", lookup_expr="gte")
     date_to = df.DateFilter(field_name="timestamp__date", lookup_expr="lte")
 
-    # Case-insensitive exact match on status; adjust if you use choices.
-    status = df.CharFilter(field_name="status", lookup_expr="iexact")
+    # Case-insensitive exact match on notes; icontains available via explicit lookup
+    notes = df.CharFilter(field_name="notes", lookup_expr="iexact")
 
     class Meta:
         model = Reading
-        fields = ["date_from", "date_to", "status"]
+        # We explicitly define which filters are allowed via the attributes above
+        fields = ["date_from", "date_to", "notes"]
 
 
 # ---------------------------
@@ -128,7 +130,7 @@ class ReadingListCreateView(generics.ListCreateAPIView):
     filterset_class = ReadingFilter
 
     # Allow clients to order by these fields. Default is newest first.
-    ordering_fields = ["timestamp", "value", "status"]
+    ordering_fields = ["timestamp", "value", "notes"]
     ordering = ["-timestamp"]
 
     def get_queryset(self):
