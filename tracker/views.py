@@ -21,17 +21,35 @@ from .serializers import RegisterSerializer, UserSerializer, ReadingSerializer
 
 class RegisterView(generics.CreateAPIView):
     """
-    Register a new user.
+    Register a new user and immediately return an auth token.
+    POST: { "username": "...", "email": "...", "password": "..." }
+    RESP: { "message": "User registered successfully", "token": "<token>" }
     """
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]  # explicitly open
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()  # RegisterSerializer.create() hashes password
+        token, _ = Token.objects.get_or_create(user=user)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            {"message": "User registered successfully", "token": token.key},
+            status=status.HTTP_201_CREATED,
+            headers=headers,
+        )
 
 
 class LoginView(APIView):
     """
-    Obtain an auth token using username/password.
+    Obtain a DRF auth token using username/password.
     POST: { "username": "...", "password": "..." } -> { "token": "..." }
+    Use header on protected routes: Authorization: Token <token>
     """
+    permission_classes = [permissions.AllowAny]  # explicitly open
+
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
@@ -53,6 +71,8 @@ class LoginView(APIView):
 class ProfileView(APIView):
     """
     Get/Update the authenticated user's profile.
+    GET -> user data
+    PUT (partial) -> update username/email
     """
     permission_classes = [permissions.IsAuthenticated]
 
