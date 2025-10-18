@@ -27,10 +27,14 @@ DEBUG = os.getenv("DJANGO_DEBUG", "True").strip().lower() == "true"
 
 # When DEBUG is True, allow everything to avoid local hassles.
 # In prod, set: export ALLOWED_HOSTS="example.com,api.example.com"
+# Hosts
 if DEBUG:
-    ALLOWED_HOSTS = ["*"]
+    ALLOWED_HOSTS = ["*"]  # allow everything in local dev
 else:
-    ALLOWED_HOSTS = [h for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()]
+    # default to localhost/127.0.0.1 if env var not provided
+    ALLOWED_HOSTS = [
+        h.strip() for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if h.strip()
+    ]
 
 # ------------------------------------------------------------
 # Applications
