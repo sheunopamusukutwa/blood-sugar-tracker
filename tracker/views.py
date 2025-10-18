@@ -22,16 +22,21 @@ from .serializers import RegisterSerializer, UserSerializer, ReadingSerializer
 class RegisterView(generics.CreateAPIView):
     """
     Register a new user.
+    POST: { "username": "...", "email": "...", "password": "..." } -> 201
     """
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]  # explicitly open
 
 
 class LoginView(APIView):
     """
-    Obtain an auth token using username/password.
+    Obtain a DRF auth token using username/password.
     POST: { "username": "...", "password": "..." } -> { "token": "..." }
+    Use header: Authorization: Token <token>
     """
+    permission_classes = [permissions.AllowAny]  # explicitly open
+
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
@@ -53,6 +58,8 @@ class LoginView(APIView):
 class ProfileView(APIView):
     """
     Get/Update the authenticated user's profile.
+    GET -> user data
+    PUT (partial) -> update username/email
     """
     permission_classes = [permissions.IsAuthenticated]
 
