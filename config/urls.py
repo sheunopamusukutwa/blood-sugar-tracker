@@ -16,13 +16,8 @@ Including another URLconf
 """
 # config/urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.http import JsonResponse
-
-from tracker.views import (
-    RegisterView, LoginView, ProfileView,
-    ReadingListCreateView, ReadingDetailView,
-)
 
 def root_view(_request):
     return JsonResponse({
@@ -45,12 +40,6 @@ urlpatterns = [
     path("", root_view),                 # GET / → small JSON landing
     path("healthz", healthz),            # GET /healthz → {"status":"ok"}
 
-    # Auth & profile
-    path("api/register/", RegisterView.as_view(), name="register"),
-    path("api/login/", LoginView.as_view(), name="login"),
-    path("api/profile/", ProfileView.as_view(), name="profile"),
-
-    # Readings
-    path("api/readings/", ReadingListCreateView.as_view(), name="reading-list-create"),
-    path("api/readings/<int:pk>/", ReadingDetailView.as_view(), name="reading-detail"),
+    # Mount all tracker routes under /api/
+    path("api/", include("tracker.urls")),
 ]

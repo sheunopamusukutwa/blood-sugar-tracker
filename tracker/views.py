@@ -3,6 +3,8 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 
+from django.http import JsonResponse
+
 from rest_framework import generics, permissions, status, filters as drf_filters
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -85,6 +87,44 @@ class ProfileView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ---------------------------
+# Health & API Index
+# ---------------------------
+
+class HealthCheckView(APIView):
+    """
+    Lightweight health check for uptime monitors.
+    GET -> {"status":"ok"}
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        return Response({"status": "ok"}, status=status.HTTP_200_OK)
+
+
+class ApiIndexView(APIView):
+    """
+    Simple root index so hitting "/" returns something useful in prod.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        return Response(
+            {
+                "name": "Blood Sugar Tracker API",
+                "version": "v1",
+                "endpoints": {
+                    "register": "/api/register/",
+                    "login": "/api/login/",
+                    "profile": "/api/profile/",
+                    "readings": "/api/readings/",
+                    "health": "/healthz",
+                },
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 # ---------------------------
