@@ -21,9 +21,9 @@ from .serializers import RegisterSerializer, UserSerializer, ReadingSerializer
 
 class RegisterView(generics.CreateAPIView):
     """
-    Register a new user and immediately return an auth token.
+    Register a new user.
     POST: { "username": "...", "email": "...", "password": "..." }
-    RESP: { "message": "User registered successfully", "token": "<token>" }
+    RESP: { "message": "User registered successfully" }
     """
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
@@ -32,11 +32,10 @@ class RegisterView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()  # RegisterSerializer.create() hashes password
-        token, _ = Token.objects.get_or_create(user=user)
+        serializer.save()  # RegisterSerializer.create() hashes password
         headers = self.get_success_headers(serializer.data)
         return Response(
-            {"message": "User registered successfully", "token": token.key},
+            {"message": "User registered successfully"},
             status=status.HTTP_201_CREATED,
             headers=headers,
         )
