@@ -97,7 +97,7 @@ class ReadingFilter(df.FilterSet):
       - ?date_from=YYYY-MM-DD  (inclusive)
       - ?date_to=YYYY-MM-DD    (inclusive)
       - ?notes=after dinner    (case-insensitive exact)
-      - ?notes__icontains=dinner (substring match)
+      - ?notes_icontains=dinner   (substring match, case-insensitive)
       - ?ordering=timestamp|-timestamp|value|-value|notes|-notes
     """
     # Filter against the DATE part of the timestamp (works with DateTimeField)
@@ -106,11 +106,12 @@ class ReadingFilter(df.FilterSet):
 
     # Case-insensitive exact match on notes; icontains available via explicit lookup
     notes = df.CharFilter(field_name="notes", lookup_expr="iexact")
+    notes_icontains = df.CharFilter(field_name="notes", lookup_expr="icontains")
 
     class Meta:
         model = Reading
         # We explicitly define which filters are allowed via the attributes above
-        fields = ["date_from", "date_to", "notes"]
+        fields = ["date_from", "date_to", "notes", "notes_icontains"]
 
 
 # ---------------------------
